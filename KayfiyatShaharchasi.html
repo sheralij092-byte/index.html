@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kayfiyat Shaharchasi 2.0</title>
+
+<meta name="theme-color" content="#7257e8">
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+/* =========================================================
+   INTRO
+========================================================= */
+
+#intro{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    color:white;
+    background:
+        radial-gradient(circle at 50% 20%,rgba(255,255,255,.18),transparent 30%),
+        linear-gradient(135deg,#7661ef,#4e35a7 55%,#21154e);
+    transition:.7s ease;
+}
+
+.intro-card{
+    width:min(560px,100%);
+    padding:45px 30px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:30px;
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(18px);
+    box-shadow:0 25px 80px rgba(0,0,0,.3);
+    animation:cardIn .9s ease;
+}
+
+.logo{
+    width:85px;
+    height:85px;
+    margin:0 auto 20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:45px;
+    border-radius:25px;
+    background:rgba(255,255,255,.17);
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.intro-card h1{
+    font-size:clamp(32px,7vw,55px);
+    margin-bottom:12px;
+}
+
+.intro-card p{
+    font-size:17px;
+    line-height:1.6;
+    opacity:.9;
+    margin-bottom:28px;
+}
+
+.start-btn,
+.result-btn{
+    border:0;
+    padding:15px 27px;
+    border-radius:18px;
+    color:#30205f;
+    background:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 12px 30px rgba(0,0,0,.2);
+    transition:.25s;
+}
+
+.start-btn:hover,
+.result-btn:hover{
+    transform:translateY(-3px) scale(1.02);
+}
+
+@keyframes cardIn{
+    from{
+        opacity:0;
+        transform:translateY(35px) scale(.95);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+/* =========================================================
+   QUESTIONS
+========================================================= */
+
+#questions{
+    position:fixed;
+    inset:0;
+    z-index:900;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    color:white;
+    background:
+        radial-gradient(circle at 30% 20%,rgba(255,255,255,.16),transparent 28%),
+        linear-gradient(135deg,#6651dc,#39277e,#18102f);
+}
+
+.question-card{
+    width:min(650px,100%);
+    padding:30px;
+    border-radius:30px;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(18px);
+    box-shadow:0 25px 70px rgba(0,0,0,.3);
+}
+
+.progress{
+    width:100%;
+    height:8px;
+    overflow:hidden;
+    margin-bottom:18px;
+    border-radius:20px;
+    background:rgba(255,255,255,.16);
+}
+
+.progress-bar{
+    width:20%;
+    height:100%;
+    border-radius:20px;
+    background:white;
+    transition:.4s;
+}
+
+.question-number{
+    font-size:14px;
+    opacity:.7;
+    margin-bottom:12px;
+}
+
+#questionTitle{
+    font-size:clamp(25px,5vw,38px);
+    line-height:1.2;
+    margin-bottom:25px;
+}
+
+#answers{
+    display:grid;
+    gap:12px;
+}
+
+.answer-btn{
+    width:100%;
+    padding:16px 18px;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:17px;
+    color:white;
+    background:rgba(255,255,255,.09);
+    text-align:left;
+    font-size:16px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.answer-btn:hover{
+    transform:translateX(5px);
+    background:rgba(255,255,255,.17);
+}
+
+.answer-btn.selected{
+    background:white;
+    color:#38256f;
+    transform:scale(1.015);
+}
+
+.next-btn{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:0;
+    border-radius:17px;
+    color:#332166;
+    background:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.next-btn:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.next-btn:not(:disabled):hover{
+    transform:translateY(-2px);
+}
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+#result{
+    position:fixed;
+    inset:0;
+    z-index:950;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    color:white;
+    background:
+        radial-gradient(circle at 50% 20%,rgba(255,255,255,.2),transparent 28%),
+        linear-gradient(135deg,#7963ef,#4d35a7 55%,#1b123d);
+}
+
+#result.show{
+    display:flex;
+}
+
+.result-card{
+    width:min(600px,100%);
+    padding:45px 30px;
+    text-align:center;
+    border-radius:32px;
+    border:1px solid rgba(255,255,255,.22);
+    background:rgba(255,255,255,.13);
+    backdrop-filter:blur(20px);
+    box-shadow:0 25px 80px rgba(0,0,0,.35);
+    animation:resultIn .8s cubic-bezier(.2,.8,.2,1);
+}
+
+.result-icon{
+    font-size:65px;
+    margin-bottom:15px;
+    animation:float 2.5s ease-in-out infinite;
+}
+
+.result-title{
+    font-size:clamp(28px,6vw,44px);
+    font-weight:800;
+    line-height:1.15;
+    margin-bottom:18px;
+}
+
+.result-text{
+    font-size:18px;
+    line-height:1.6;
+    opacity:.94;
+    margin-bottom:28px;
+}
+
+.result-heart{
+    font-size:24px;
+}
+
+@keyframes resultIn{
+    from{
+        opacity:0;
+        transform:translateY(40px) scale(.9);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-8px);
+    }
+}
+
+/* =========================================================
+   CITY
+========================================================= */
+
+#city{
+    position:fixed;
+    inset:0;
+    display:none;
+    overflow:hidden;
+    background:
+        linear-gradient(
+            to bottom,
+            #79cfff 0%,
+            #b9ecff 43%,
+            #e9faff 64%,
+            #8bd36e 65%,
+            #57a94e 100%
+        );
+    transition:background 1s ease;
+}
+
+/* SUN */
+
+.sun{
+    position:absolute;
+    width:125px;
+    height:125px;
+    top:8%;
+    right:11%;
+    border-radius:50%;
+    background:#fff5a8;
+    box-shadow:
+        0 0 35px #fff3a0,
+        0 0 90px rgba(255,221,91,.65);
+    transition:1s;
+}
+
+/* CLOUDS */
+
+.cloud{
+    position:absolute;
+    width:150px;
+    height:45px;
+    border-radius:50px;
+    background:rgba(255,255,255,.82);
+    filter:blur(.2px);
+    box-shadow:
+        35px -18px 0 5px rgba(255,255,255,.82),
+        70px -5px 0 2px rgba(255,255,255,.82);
+    animation:cloudMove 35s linear infinite;
+}
+
+.cloud1{
+    top:13%;
+    left:-220px;
+}
+
+.cloud2{
+    top:26%;
+    left:-350px;
+    transform:scale(.7);
+    opacity:.7;
+    animation-duration:48s;
+    animation-delay:8s;
+}
+
+.cloud3{
+    top:9%;
+    left:-450px;
+    transform:scale(.5);
+    opacity:.55;
+    animation-duration:58s;
+    animation-delay:17s;
+}
+
+@keyframes cloudMove{
+    from{
+        left:-300px;
+    }
+    to{
+        left:110%;
+    }
+}
+
+/* MOUNTAINS */
+
+.mountains{
+    position:absolute;
+    left:-5%;
+    right:-5%;
+    bottom:34%;
+    height:30%;
+}
+
+.mountain{
+    position:absolute;
+    bottom:0;
+    width:0;
+    height:0;
+    border-left:150px solid transparent;
+    border-right:150px solid transparent;
+    border-bottom:210px solid #78a6a5;
+    opacity:.72;
+}
+
+.m1{
+    left:5%;
+}
+
+.m2{
+    left:28%;
+    transform:scale(1.35);
+    opacity:.55;
+}
+
+.m3{
+    left:60%;
+    transform:scale(1.1);
+    opacity:.62;
+}
+
+.m4{
+    left:82%;
+    transform:scale(.8);
+    opacity:.5;
+}
+
+/* CITY BUILDINGS */
+
+.buildings{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:31%;
+    height:30%;
+}
+
+.building{
+    position:absolute;
+    bottom:0;
+    border-radius:5px 5px 0 0;
+    background:#d9d3df;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);
+}
+
+.building::after{
+    content:"";
+    position:absolute;
+    inset:15px;
+    background:
+        repeating-linear-gradient(
+            to right,
+            #9ac9dc 0 16px,
+            transparent 16px 28px
+        ),
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0 17px,
+            rgba(100,100,100,.1) 17px 20px
+        );
+    opacity:.8;
+}
+
+.b1{
+    left:4%;
+    width:100px;
+    height:150px;
+}
+
+.b2{
+    left:17%;
+    width:130px;
+    height:190px;
+    background:#c9d6df;
+}
+
+.b3{
+    right:19%;
+    width:120px;
+    height:170px;
+    background:#ded1c6;
+}
+
+.b4{
+    right:4%;
+    width:150px;
+    height:215px;
+    background:#c9c5dc;
+}
+
+/* GROUND */
+
+.ground{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:37%;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(255,255,255,.08),transparent 18%),
+        linear-gradient(#72c85e,#3c8e43);
+}
+
+/* ROAD */
+
+.road{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:7%;
+    height:115px;
+    background:#4d5359;
+    transform:skewY(-1deg);
+    box-shadow:0 -5px 15px rgba(0,0,0,.1);
+}
+
+.road::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    height:6px;
+    background:
+        repeating-linear-gradient(
+            to right,
+            #f9dc68 0 65px,
+            transparent 65px 110px
+        );
+}
+
+/* SIDEWALK */
+
+.sidewalk{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:20%;
+    height:35px;
+    background:#bcbcbc;
+}
+
+/* HOUSES */
+
+.house{
+    position:absolute;
+    bottom:24%;
+    width:170px;
+    height:115px;
+    border-radius:8px;
+    background:#fff0d6;
+    box-shadow:0 12px 25px rgba(0,0,0,.12);
+}
+
+.house::before{
+    content:"";
+    position:absolute;
+    left:-15px;
+    top:-75px;
+    width:0;
+    height:0;
+    border-left:100px solid transparent;
+    border-right:100px solid transparent;
+    border-bottom:85px solid #b96555;
+}
+
+.house1{
+    left:13%;
+}
+
+.house2{
+    right:12%;
+    background:#e8f2ff;
+}
+
+.house2::before{
+    border-bottom-color:#6479a8;
+}
+
+.door{
+    position:absolute;
+    bottom:0;
+    left:65px;
+    width:42px;
+    height:70px;
+    border-radius:6px 6px 0 0;
+    background:#714d3b;
+}
+
+.window{
+    position:absolute;
+    top:25px;
+    width:38px;
+    height:38px;
+    border:4px solid white;
+    background:#8ed6ed;
+}
+
+.window1{
+    left:20px;
+}
+
+.window2{
+    right:20px;
+}
+
+/* TREES */
+
+.tree{
+    position:absolute;
+    bottom:22%;
+    width:30px;
+    height:95px;
+    background:#704b32;
+    border-radius:8px;
+}
+
+.tree::before{
+    content:"";
+    position:absolute;
+    width:85px;
+    height:85px;
+    left:-27px;
+    top:-65px;
+    border-radius:50%;
+    background:#3c9b50;
+    box-shadow:
+        25px -20px 0 2px #49a95a,
+        -20px -10px 0 0 #318d46;
+}
+
+.tree1{
+    left:6%;
+}
+
+.tree2{
+    left:37%;
+    transform:scale(.8);
+}
+
+.tree3{
+    right:37%;
+    transform:scale(.9);
+}
+
+.tree4{
+    right:5%;
+    transform:scale(.75);
+}
+
+/* CARS */
+
+.car{
+    position:absolute;
+    z-index:10;
+    bottom:10%;
+    width:115px;
+    height:42px;
+    border-radius:14px 18px 8px 8px;
+    background:#e74c67;
+    box-shadow:0 8px 12px rgba(0,0,0,.2);
+    animation:carMove 14s linear infinite;
+}
+
+.car::before{
+    content:"";
+    position:absolute;
+    left:25px;
+    top:-20px;
+    width:55px;
+    height:27px;
+    border-radius:20px 20px 5px 5px;
+    background:inherit;
+}
+
+.car::after{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:14px;
+    bottom:-9px;
+    border-radius:50%;
+    background:#252525;
+    box-shadow:65px 0 0 #252525;
+}
+
+.car2{
+    bottom:15%;
+    background:#596ee8;
+    animation-duration:18s;
+    animation-delay:4s;
+}
+
+@keyframes carMove{
+    from{
+        left:-160px;
+    }
+    to{
+        left:110%;
+    }
+}
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar{
+    position:absolute;
+    z-index:30;
+    top:15px;
+    left:15px;
+    right:15px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.brand{
+    padding:11px 16px;
+    border-radius:15px;
+    color:white;
+    font-weight:bold;
+    background:rgba(40,40,60,.22);
+    backdrop-filter:blur(10px);
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+}
+
+.city-btn{
+    width:42px;
+    height:42px;
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:14px;
+    color:white;
+    background:rgba(40,40,60,.22);
+    backdrop-filter:blur(10px);
+    cursor:pointer;
+    font-size:18px;
+}
+
+/* =========================================================
+   MOOD COLORS
+========================================================= */
+
+#city.mood-happy{
+    filter:saturate(1.08);
+}
+
+#city.mood-calm{
+    filter:saturate(.9);
+}
+
+#city.mood-love{
+    filter:hue-rotate(-8deg) saturate(1.05);
+}
+
+#city.mood-sad{
+    filter:saturate(.72) brightness(.9);
+}
+
+#city.mood-energy{
+    filter:saturate(1.2) brightness(1.03);
+}
+
+/* =========================================================
+   NIGHT
+========================================================= */
+
+#city.night{
+    background:
+        linear-gradient(
+            to bottom,
+            #111a42 0%,
+            #25366a 43%,
+            #56627c 64%,
+            #34503d 65%,
+            #1e3a28 100%
+        );
+}
+
+#city.night .sun{
+    width:90px;
+    height:90px;
+    background:#f2f0d0;
+    box-shadow:0 0 30px rgba(255,255,220,.55);
+}
+
+#city.night .ground{
+    background:
+        linear-gradient(#375e3a,#182e20);
+}
+
+#city.night .buildings{
+    filter:brightness(.65);
+}
+
+#city.night .house{
+    filter:brightness(.7);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:700px){
+
+    .intro-card{
+        padding:35px 22px;
+    }
+
+    .question-card{
+        padding:23px 18px;
+    }
+
+    .question-card{
+        max-height:90vh;
+        overflow:auto;
+    }
+
+    .house{
+        transform:scale(.72);
+        transform-origin:bottom;
+    }
+
+    .house2{
+        transform:scale(.65);
+    }
+
+    .building{
+        transform:scale(.7);
+        transform-origin:bottom;
+    }
+
+    .sun{
+        width:85px;
+        height:85px;
+        right:7%;
+    }
+
+    .road{
+        height:90px;
+    }
+
+    .brand{
+        font-size:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =======================================================
+     INTRO
+======================================================= -->
+
+<section id="intro">
+
+    <div class="intro-card">
+
+        <div class="logo">🏙️</div>
+
+        <h1>Kayfiyat Shaharchasi</h1>
+
+        <p>
+            Kayfiyatingizni bilib oling va siz uchun
+            maxsus yaratilgan kichik shaharchaga sayohat qiling.
+        </p>
+
+        <button class="start-btn" onclick="startQuestions()">
+            Shaharchani boshlash ✨
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     QUESTIONS
+======================================================= -->
+
+<section id="questions">
+
+    <div class="question-card">
+
+        <div class="progress">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+
+        <div id="questionNumber" class="question-number">
+            1 / 5
+        </div>
+
+        <h2 id="questionTitle">
+            Bugun kayfiyatingiz qanday?
+        </h2>
+
+        <div id="answers"></div>
+
+        <button
+            id="nextBtn"
+            class="next-btn"
+            onclick="nextQuestion()"
+            disabled
+        >
+            Keyingi savol →
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     FINAL MESSAGE
+======================================================= -->
+
+<section id="result">
+
+    <div class="result-card">
+
+        <div class="result-icon">
+            ✨
+        </div>
+
+        <div class="result-title">
+            Sizning kayfiyatingiz tayyor!
+        </div>
+
+        <div class="result-text">
+            Bu sayt sizning eng yaqin do‘stingiz
+            <b>Sherali</b> tomonidan yaratildi.
+            <br><br>
+            U sizni qadrlaydi
+            <span class="result-heart">❤️</span>
+        </div>
+
+        <button class="result-btn" onclick="enterCity()">
+            Shaharchaga kirish →
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     CITY
+======================================================= -->
+
+<section id="city">
+
+    <div class="topbar">
+
+        <div class="brand">
+            🏙️ Kayfiyat Shaharchasi
+        </div>
+
+        <div class="actions">
+
+            <button
+                class="city-btn"
+                onclick="toggleNight()"
+                title="Kun/Tun"
+            >
+                🌙
+            </button>
+
+            <button
+                class="city-btn"
+                onclick="resetTown()"
+                title="Qayta boshlash"
+            >
+                ↻
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUN -->
+
+    <div class="sun"></div>
+
+
+    <!-- CLOUDS -->
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+
+
+    <!-- MOUNTAINS -->
+
+    <div class="mountains">
+
+        <div class="mountain m1"></div>
+        <div class="mountain m2"></div>
+        <div class="mountain m3"></div>
+        <div class="mountain m4"></div>
+
+    </div>
+
+
+    <!-- BUILDINGS -->
+
+    <div class="buildings">
+
+        <div class="building b1"></div>
+        <div class="building b2"></div>
+        <div class="building b3"></div>
+        <div class="building b4"></div>
+
+    </div>
+
+
+    <!-- GROUND -->
+
+    <div class="ground"></div>
+
+
+    <!-- HOUSES -->
+
+    <div class="house house1">
+
+        <div class="door"></div>
+
+        <div class="window window1"></div>
+        <div class="window window2"></div>
+
+    </div>
+
+
+    <div class="house house2">
+
+        <div class="door"></div>
+
+        <div class="window window1"></div>
+        <div class="window window2"></div>
+
+    </div>
+
+
+    <!-- TREES -->
+
+    <div class="tree tree1"></div>
+    <div class="tree tree2"></div>
+    <div class="tree tree3"></div>
+    <div class="tree tree4"></div>
+
+
+    <!-- SIDEWALK -->
+
+    <div class="sidewalk"></div>
+
+
+    <!-- ROAD -->
+
+    <div class="road"></div>
+
+
+    <!-- CARS -->
+
+    <div class="car"></div>
+    <div class="car car2"></div>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   QUESTIONS DATA
+========================================================= */
+
+const questions = [
+
+    {
+        title:"Bugun kayfiyatingiz qanday?",
+        answers:[
+            {text:"😄 Juda yaxshi",mood:"happy"},
+            {text:"🙂 Yaxshi",mood:"happy"},
+            {text:"😌 Tinch va xotirjam",mood:"calm"},
+            {text:"😔 Biroz tushkun",mood:"sad"}
+        ]
+    },
+
+    {
+        title:"O‘zingizni yaxshi ko‘rasizmi?",
+        answers:[
+            {text:"❤️ Ha, albatta",mood:"love"},
+            {text:"🙂 Ha, harakat qilaman",mood:"calm"},
+            {text:"😐 Ba'zida",mood:"calm"},
+            {text:"😔 Hozir unchalik emas",mood:"sad"}
+        ]
+    },
+
+    {
+        title:"Bugun o‘zingizni baxtli his qilyapsizmi?",
+        answers:[
+            {text:"😄 Ha, juda baxtliman",mood:"happy"},
+            {text:"🙂 Ha, yaxshi",mood:"happy"},
+            {text:"😐 Oddiy kun",mood:"calm"},
+            {text:"😔 Yo‘q",mood:"sad"}
+        ]
+    },
+
+    {
+        title:"Hozir sizga nima ko‘proq kerak?",
+        answers:[
+            {text:"⚡ Ko‘proq energiya",mood:"energy"},
+            {text:"😌 Tinchlik",mood:"calm"},
+            {text:"❤️ Mehr va iliqlik",mood:"love"},
+            {text:"😄 Yaxshi kayfiyat",mood:"happy"}
+        ]
+    },
+
+    {
+        title:"Bugungi kuningizni qanday o‘tkazishni xohlaysiz?",
+        answers:[
+            {text:"🎉 Qiziqarli va faol",mood:"energy"},
+            {text:"🌳 Sokin va yoqimli",mood:"calm"},
+            {text:"❤️ Yaqinlarim bilan",mood:"love"},
+            {text:"😊 Shunchaki yaxshi kayfiyatda",mood:"happy"}
+        ]
+    }
+
+];
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let currentQuestion = 0;
+
+let selectedMood = null;
+
+let finalMood = "happy";
+
+let moodScores = {
+    happy:0,
+    calm:0,
+    love:0,
+    sad:0,
+    energy:0
+};
+
+
+/* =========================================================
+   START
+========================================================= */
+
+function startQuestions(){
+
+    document.getElementById("intro").style.opacity="0";
+
+    setTimeout(function(){
+
+        document.getElementById("intro").style.display="none";
+
+        document.getElementById("questions").style.display="flex";
+
+        currentQuestion=0;
+
+        loadQuestion();
+
+    },500);
+
+}
+
+
+/* =========================================================
+   LOAD QUESTION
+========================================================= */
+
+function loadQuestion(){
+
+    const q = questions[currentQuestion];
+
+    selectedMood=null;
+
+    document.getElementById("questionNumber").textContent =
+        (currentQuestion + 1) + " / " + questions.length;
+
+    document.getElementById("questionTitle").textContent =
+        q.title;
+
+    document.getElementById("progressBar").style.width =
+        ((currentQuestion + 1) / questions.length * 100) + "%";
+
+    const answersBox =
+        document.getElementById("answers");
+
+    answersBox.innerHTML="";
+
+    q.answers.forEach(function(answer){
+
+        const button =
+            document.createElement("button");
+
+        button.className="answer-btn";
+
+        button.textContent=answer.text;
+
+        button.onclick=function(){
+
+            document
+                .querySelectorAll(".answer-btn")
+                .forEach(function(btn){
+                    btn.classList.remove("selected");
+                });
+
+            button.classList.add("selected");
+
+            selectedMood=answer.mood;
+
+            document.getElementById("nextBtn").disabled=false;
+
+        };
+
+        answersBox.appendChild(button);
+
+    });
+
+    const nextBtn =
+        document.getElementById("nextBtn");
+
+    nextBtn.disabled=true;
+
+    if(currentQuestion === questions.length - 1){
+
+        nextBtn.textContent="Natijani ko‘rish ✨";
+
+    }else{
+
+        nextBtn.textContent="Keyingi savol →";
+
+    }
+
+}
+
+
+/* =========================================================
+   NEXT QUESTION
+========================================================= */
+
+function nextQuestion(){
+
+    if(!selectedMood){
+        return;
+    }
+
+    moodScores[selectedMood]++;
+
+    if(currentQuestion < questions.length - 1){
+
+        currentQuestion++;
+
+        loadQuestion();
+
+    }else{
+
+        finishQuestions();
+
+    }
+
+}
+
+
+/* =========================================================
+   FINISH QUESTIONS
+========================================================= */
+
+function finishQuestions(){
+
+    let max=-1;
+
+    finalMood="happy";
+
+    for(const mood in moodScores){
+
+        if(moodScores[mood] > max){
+
+            max=moodScores[mood];
+
+            finalMood=mood;
+
+        }
+
+    }
+
+    document.getElementById("questions").style.display="none";
+
+    document.getElementById("result").classList.add("show");
+
+}
+
+
+/* =========================================================
+   ENTER CITY
+========================================================= */
+
+function enterCity(){
+
+    document
+        .getElementById("result")
+        .classList.remove("show");
+
+    document
+        .getElementById("city")
+        .style.display="block";
+
+    applyCityMood(finalMood);
+
+}
+
+
+/* =========================================================
+   APPLY MOOD
+========================================================= */
+
+function applyCityMood(mood){
+
+    const city =
+        document.getElementById("city");
+
+    city.classList.remove(
+        "mood-happy",
+        "mood-calm",
+        "mood-love",
+        "mood-sad",
+        "mood-energy"
+    );
+
+    city.classList.add("mood-" + mood);
+
+    const sun =
+        document.querySelector(".sun");
+
+    if(mood === "happy"){
+        sun.style.transform="scale(1.08)";
+    }
+
+    if(mood === "calm"){
+        sun.style.transform="scale(.95)";
+    }
+
+    if(mood === "love"){
+        sun.style.transform="scale(1.03)";
+    }
+
+    if(mood === "sad"){
+        sun.style.transform="scale(.8)";
+    }
+
+    if(mood === "energy"){
+        sun.style.transform="scale(1.15)";
+    }
+
+}
+
+
+/* =========================================================
+   DAY / NIGHT
+========================================================= */
+
+function toggleNight(){
+
+    const city =
+        document.getElementById("city");
+
+    city.classList.toggle("night");
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetTown(){
+
+    location.reload();
+
+}
+
+
+/* =========================================================
+   SMALL MOUSE PARALLAX
+========================================================= */
+
+document.addEventListener("mousemove",function(e){
+
+    const x =
+        (e.clientX / window.innerWidth - .5);
+
+    const y =
+        (e.clientY / window.innerHeight - .5);
+
+    const mountains =
+        document.querySelector(".mountains");
+
+    const buildings =
+        document.querySelector(".buildings");
+
+    const clouds =
+        document.querySelectorAll(".cloud");
+
+    if(mountains){
+
+        mountains.style.transform =
+            "translate(" + x * 8 + "px," + y * 4 + "px)";
+
+    }
+
+    if(buildings){
+
+        buildings.style.transform =
+            "translate(" + x * 5 + "px," + y * 2 + "px)";
+
+    }
+
+    clouds.forEach(function(cloud,index){
+
+        cloud.style.marginLeft =
+            (x * (index + 1) * 5) + "px";
+
+    });
+
+});
+
+
+/* =========================================================
+   TOUCH PARALLAX
+========================================================= */
+
+document.addEventListener("touchmove",function(e){
+
+    if(!e.touches || !e.touches[0]){
+        return;
+    }
+
+    const touch=e.touches[0];
+
+    const x =
+        touch.clientX / window.innerWidth - .5;
+
+    const y =
+        touch.clientY / window.innerHeight - .5;
+
+    const mountains =
+        document.querySelector(".mountains");
+
+    if(mountains){
+
+        mountains.style.transform =
+            "translate(" + x * 7 + "px," + y * 3 + "px)";
+
+    }
+
+},{passive:true});
+
+
+</script>
+
+</body>
+</html>
